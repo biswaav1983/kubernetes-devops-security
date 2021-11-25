@@ -2,16 +2,22 @@ pipeline {
   agent any
 
   stages {
-    stage("Build Artifact") {
+    stage('Build Artifact - Maven') {
       steps {
-      sh "mvn clean package -DskipTests=true"
-      archive 'target/*.jar'
+        sh "mvn clean package -DskipTests=true"
+        archive 'target/*.jar'
       }
     }
 
-    stage("Unit Test") {
+    stage('Unit Tests - JUnit and Jacoco') {
       steps {
         sh "mvn test"
+      }
+      post {
+        always {
+          junit 'target/surefire-reports/*.xml'
+          jacoco execPattern: 'target/jacoco.exec'
+        }
       }
     }
   }
