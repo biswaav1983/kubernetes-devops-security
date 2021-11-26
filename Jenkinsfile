@@ -35,7 +35,7 @@ pipeline {
 
    stage('SonarQube - SAST') {
       steps {
-        sh "mvn sonar:sonar -Dsonar.projectKey=numeric-application -Dsonar.host.url=http://Replace with IP or DNS:9000 -Dsonar.login=a0245285212f6c4b087807316d618c55b61144e6"
+        sh "mvn sonar:sonar -Dsonar.projectKey=numeric-application -Dsonar.host.url=http://Replace with IP or DNS:9000 -Dsonar.login=Generate ur own token"
       }
     }
     stage('Docker Build and Push') {
