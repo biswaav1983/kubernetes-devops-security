@@ -22,5 +22,16 @@ pipeline {
       }
     }
 
+   stage('Docker Build and Push') {
+      steps {
+        withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
+          sh 'printenv'
+          sh 'docker build -t avisdocker/numeric-app-v1:""$GIT_COMMIT"" .'
+          sh 'docker push avisdocker/numeric-app-v1:""$GIT_COMMIT""'
+        }
+      }
+    }
+
+
 }
 }
