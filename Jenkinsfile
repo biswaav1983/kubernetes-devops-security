@@ -21,10 +21,10 @@ pipeline {
         }
       }
     }
-   
-     stage('Mutation Tests - PIT') {
-       steps {
-          sh "mvn org.pitest:pitest-maven:mutationCoverage"
+    
+   stage('Mutation Tests - PIT') {
+      steps {
+        sh "mvn org.pitest:pitest-maven:mutationCoverage"
       }
       post {
         always {
@@ -33,12 +33,17 @@ pipeline {
       }
     }
 
-   stage('Docker Build and Push') {
+   stage('SonarQube - SAST') {
+      steps {
+        sh "mvn sonar:sonar -Dsonar.projectKey=numeric-application -Dsonar.host.url=http://192.168.56.106:9000 -Dsonar.login=f7236ec05dc4639adb9fcadd366f51ae12c988bd"
+      }
+    }
+    stage('Docker Build and Push') {
       steps {
         withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
           sh 'printenv'
-          sh 'docker build -t avisdocker/numeric-app-v1:""$GIT_COMMIT"" .'
-          sh 'docker push avisdocker/numeric-app-v1:""$GIT_COMMIT""'
+          sh 'docker build -t avisdocker/numeric-app-v2:""$GIT_COMMIT"" .'
+          sh 'docker push avisdocker/numeric-app-v2:""$GIT_COMMIT""'
         }
       }
     }
@@ -46,23 +51,13 @@ pipeline {
     stage('Kubernetes Deployment - DEV') {
       steps {
         withKubeConfig([credentialsId: 'kubeconfig']) {
-          sh "sed -i 's#avisdocker/numeric-app-v1:${GIT_COMMIT}#g' k8s_deployment_service.yaml"
+          sh "sed -i 's#replace#avisdocker/numeric-app-v2:${GIT_COMMIT}#g' k8s_deployment_service.yaml"
           sh "kubectl apply -f k8s_deployment_service.yaml"
         }
       }
     }
 
-
-
-stage('SonarQube - SAST') {
-      steps {
-        sh "mvn sonar:sonar -Dsonar.projectKey=numeric-application -Dsonar.host.url=http://192.168.56.106:9000 -Dsonar.login=a8186a10bc629730a8c96a4bdeb6635fa2a5c74a"
-      }
-    }
-
-
-
-
+  }
 
 }
-}
+
