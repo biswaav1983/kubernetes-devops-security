@@ -33,13 +33,6 @@ pipeline {
       }
     }
 
-     stage('SonarQube - SAST') {
-      steps {
-        sh "mvn sonar:sonar -Dsonar.projectKey=numeric-application -Dsonar.host.url=http://192.168.56.106:9000 -Dsonar.login=a8186a10bc629730a8c96a4bdeb6635fa2a5c74a"
-      }
-    }
-
-
    stage('Docker Build and Push') {
       steps {
         withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
@@ -50,7 +43,23 @@ pipeline {
       }
     }
 
-    
+    stage('Kubernetes Deployment - DEV') {
+      steps {
+        withKubeConfig([credentialsId: 'kubeconfig']) {
+          sh "sed -i 's#avisdocker/numeric-app-v1:${GIT_COMMIT}#g' k8s_deployment_service.yaml"
+          sh "kubectl apply -f k8s_deployment_service.yaml"
+        }
+      }
+    }
+
+
+
+stage('SonarQube - SAST') {
+      steps {
+        sh "mvn sonar:sonar -Dsonar.projectKey=numeric-application -Dsonar.host.url=http://192.168.56.106:9000 -Dsonar.login=a8186a10bc629730a8c96a4bdeb6635fa2a5c74a"
+      }
+    }
+
 
 
 
