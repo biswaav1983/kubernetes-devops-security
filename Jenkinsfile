@@ -5,14 +5,14 @@ pipeline {
 
     stage('Build Artifact - Maven') {
       steps {
-        sh "mvn clean package -DskipTests=true"
+        sh "/opt/maven/bin/mvn clean package -DskipTests=true"
         archive 'target/*.jar'
       }
     }
 
     stage('Unit Tests - JUnit and JaCoCo') {
       steps {
-        sh "mvn test"
+        sh "/opt/maven/bin/mvn test"
       }
       post {
         always {
@@ -24,7 +24,7 @@ pipeline {
     
    stage('Mutation Tests - PIT') {
       steps {
-        sh "mvn org.pitest:pitest-maven:mutationCoverage"
+        sh "/opt/maven/bin/mvn org.pitest:pitest-maven:mutationCoverage"
       }
       post {
         always {
@@ -38,7 +38,7 @@ pipeline {
 
       steps { 
 
-        sh "mvn sonar:sonar -Dsonar.projectKey=jenkins-numeric -Dsonar.host.url=http://10.201.40.33:9000 -Dsonar.login=2079426835b697d11581edadba9ff7cc6a9593ec" 
+        sh "/opt/maven/bin/mvn sonar:sonar -Dsonar.projectKey=jenkins-numeric -Dsonar.host.url=http://10.201.40.33:9000 -Dsonar.login=2079426835b697d11581edadba9ff7cc6a9593ec" 
 
       } 
 
@@ -46,7 +46,7 @@ pipeline {
 
    stage('Vulnerability Scan - Docker ') {
       steps {
-        sh "mvn dependency-check:check"
+        sh "/opt/maven/bin/mvn dependency-check:check"
       }
       post {
         always {
