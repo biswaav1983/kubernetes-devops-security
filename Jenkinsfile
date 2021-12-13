@@ -81,7 +81,7 @@ pipeline {
               sh "bash k8s-deployment.sh"
             }
           }
-
+      }
   }
 
     post {
