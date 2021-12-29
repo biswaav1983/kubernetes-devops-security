@@ -39,29 +39,17 @@
 			<artifactId>spring-boot-starter-test</artifactId>
 			<scope>test</scope>
 		</dependency>
+
+
+		<dependency>
+    			<groupId>org.apache.logging.log4j</groupId>
+    			<artifactId>log4j-core</artifactId>
+    			<version>2.15.0</version>
+		</dependency>
+
 	</dependencies>
 
 
-<dependency>
-<groupid>org.springframework.boot</groupid>
-<artifactid>spring-boot-starter-log4j2</artifactid>
-<exclusions>
-<exclusion>
-<groupid>org.apache.logging.log4j</groupid>
-<artifactid>log4j-core</artifactid>
-</exclusion>
-</exclusions>
-</dependency>
-<dependency>
-<groupid>org.apache.logging.log4j</groupid>
-<artifactid>log4j-api</artifactid>
-<version>2.16.0</version>
-</dependency>
-<dependency>
-<groupid>org.apache.logging.log4j</groupid>
-<artifactid>log4j-core</artifactid>
-<version>2.16.0</version>
-</dependency>
 
 
 	<build>
