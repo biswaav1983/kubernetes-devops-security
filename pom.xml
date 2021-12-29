@@ -41,6 +41,29 @@
 		</dependency>
 	</dependencies>
 
+
+<dependency>
+<groupid>org.springframework.boot</groupid>
+<artifactid>spring-boot-starter-log4j2</artifactid>
+<exclusions>
+<exclusion>
+<groupid>org.apache.logging.log4j</groupid>
+<artifactid>log4j-core</artifactid>
+</exclusion>
+</exclusions>
+</dependency>
+<dependency>
+<groupid>org.apache.logging.log4j</groupid>
+<artifactid>log4j-api</artifactid>
+<version>2.16.0</version>
+</dependency>
+<dependency>
+<groupid>org.apache.logging.log4j</groupid>
+<artifactid>log4j-core</artifactid>
+<version>2.16.0</version>
+</dependency>
+
+
 	<build>
 		<plugins>
 			<plugin>
@@ -118,32 +141,6 @@
 
 
 
-<!--                   log4j Check Plugin                   -->
-
-<plugin>
-	    <groupId>org.apache.maven.plugins</groupId>
-	    <artifactId>maven-enforcer-plugin</artifactId>
-	    <version>3.0.0</version>
-	    <executions>
-	        <execution>
-	            <id>Restrict-bad-log4j-versions</id>
-	            <phase>validate</phase>
-	            <goals>
-	                <goal>enforce</goal>
-	            </goals>
-	            <configuration>
-	                <rules>
-	                    <bannedDependencies>
-	                        <excludes>
-	                            <exclude>org.apache.logging.log4j:log4j-core:(,2.15.0)</exclude>
-	                        </excludes>
-	                    </bannedDependencies>
-	                </rules>
-	                <fail>true</fail>
-	            </configuration>
-	        </execution>
-	    </executions>
-	</plugin>
 
 
 </plugins>
