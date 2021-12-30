@@ -5,7 +5,7 @@ pipeline {
     deploymentName = "devsecops"
     containerName = "devsecops-container"
     serviceName = "devsecops-svc"
-    imageName = "avisdocker/numeric-app-V1:${GIT_COMMIT}"
+    imageName = "avisdocker/numeric-app:${GIT_COMMIT}"
     applicationURL = "http://localhost/"
     applicationURI = "/increment/99"
   }
@@ -63,8 +63,8 @@ pipeline {
       steps {
         withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
           sh 'printenv'
-          sh 'docker build -t avisdocker/numeric-app-v1:""$GIT_COMMIT"" .'
-          sh 'docker push avisdocker/numeric-app-v1:""$GIT_COMMIT""'
+          sh 'docker build -t avisdocker/numeric-app:""$GIT_COMMIT"" .'
+          sh 'docker push avisdocker/numeric-app:""$GIT_COMMIT""'
         }
       }
     }
