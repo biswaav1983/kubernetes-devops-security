@@ -5,7 +5,7 @@ pipeline {
     deploymentName = "devsecops"
     containerName = "devsecops-container"
     serviceName = "devsecops-svc"
-    imageName = "avisdocker/numeric-app:${GIT_COMMIT}"
+    imageName = "avisdocker/numeric-appv1:${GIT_COMMIT}"
     applicationURL = "http://localhost/"
     applicationURI = "/increment/99"
   }
@@ -63,8 +63,8 @@ pipeline {
       steps {
         withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
           sh 'printenv'
-          sh 'docker build -t avisdocker/numeric-app:""$GIT_COMMIT"" .'
-          sh 'docker push avisdocker/numeric-app:""$GIT_COMMIT""'
+          sh 'docker build -t avisdocker/numeric-appv1:""$GIT_COMMIT"" .'
+          sh 'docker push avisdocker/numeric-appv1:""$GIT_COMMIT""'
         }
       }
     }
@@ -79,7 +79,7 @@ pipeline {
     
 //	steps {
 //        withKubeConfig([credentialsId: 'kubeconfig']) {
-//          sh "sed -i 's#replace#avisdocker/numeric-app:${GIT_COMMIT}#g' k8s_deployment_service.yaml"
+//          sh "sed -i 's#replace#avisdocker/numeric-appv1:${GIT_COMMIT}#g' k8s_deployment_service.yaml"
 //          sh "kubectl apply -f k8s_deployment_service.yaml"
 //        }
 //      }
