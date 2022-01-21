@@ -6,7 +6,7 @@ pipeline {
     containerName = "devsecops-container"
     serviceName = "devsecops-svc"
     imageName = "avisdocker/numeric-appv1:${GIT_COMMIT}"
-    applicationURL = "http://localhost/"
+    applicationURL = "http://localhost"
     applicationURI = "/increment/99"
   }
 
