@@ -16,6 +16,14 @@
 	<description>Demo for DevSecOps</description>
 
 	<properties>
+    		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    		<maven.compiler.release>8</maven.compiler.release>
+    		<maven.compiler.source>8</maven.compiler.source>
+    		<maven.compiler.target>8</maven.compiler.target>
+  	</properties>
+
+
+	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 		<java.version>11.0.20.1</java.version>
