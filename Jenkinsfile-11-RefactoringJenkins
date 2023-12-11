@@ -37,24 +37,11 @@ stage('SonarQube - SAST') {
     }
 
 
-//stage('Vulnerability Scan - Docker ') {
-//      steps {
-//        sh "mvn dependency-check:check"
-//      }
-      
-//    }
-
-stage('Vulnerability Scan - Docker') {
+stage('Vulnerability Scan - Docker ') {
       steps {
-        parallel(
-          "Dependency Scan": {
-            sh "mvn dependency-check:check"
-          },
-          "Trivy Scan": {
-            sh "bash trivy-docker-image-scan.sh"
-          }
-        )
+        sh "mvn dependency-check:check"
       }
+      
     }
 
 
@@ -62,7 +49,7 @@ stage('Vulnerability Scan - Docker') {
       steps {
         withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
           sh 'printenv'
-          sh 'sudo docker build -t avisdocker/numeric-app:""$GIT_COMMIT"" .'
+          sh 'docker build -t avisdocker/numeric-app:""$GIT_COMMIT"" .'
           sh 'docker push avisdocker/numeric-app:""$GIT_COMMIT""'
         }
       }
