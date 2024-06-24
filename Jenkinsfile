@@ -10,47 +10,81 @@ pipeline {
       }
     }
 
- stage("UnitTest-JUnit JaCoCo") { 
-      steps { 
-      sh "mvn test" 
-   }
-   post { 
-        always { 
-          junit 'target/surefire-reports/*.xml' 
-          jacoco execPattern: 'target/jacoco.exec' 
-        } 
-      } 
-    } 
+ stage("UnitTest-JUnit JaCoCo") {
+      steps {
+      sh "mvn test"
+	}
+  }
 
 stage('Mutation Tests - PIT') {
       steps {
         sh "mvn org.pitest:pitest-maven:mutationCoverage"
       }
-      post {
-        always {
-          pitmutation mutationStatsFile: '**/target/pit-reports/**/mutations.xml'
+   }
+
+
+stage('SonarQube - SAST') {
+      steps {
+        withSonarQubeEnv('SonarQube') {
+        sh "mvn sonar:sonar -Dsonar.projectKey=numeric-application -Dsonar.host.url=http://10.0.3.26:9000 -Dsonar.login=1a6345e015c815082d08a9fcab5cfd1dbbfd88d7"
+      }
+        timeout(time: 2, unit: 'MINUTES') {
+        script {
+            waitForQualityGate abortPipeline: true
+         }
         }
       }
     }
 
 
-stage('SonarQube - SAST') {
+//stage('Vulnerability Scan - Docker ') {
+//      steps {
+//        sh "mvn dependency-check:check"
+//      }
+      
+//    }
+
+stage('Vulnerability Scan - Docker') {
       steps {
-        sh "mvn sonar:sonar -Dsonar.projectKey=numeric-application -Dsonar.host.url=http://10.0.3.26:9000 -Dsonar.login=1a6345e015c815082d08a9fcab5cfd1dbbfd88d7"
+        parallel(
+          "Dependency Scan": {
+            sh "mvn dependency-check:check"
+          },
+          "Trivy Scan": {
+            sh "bash trivy-docker-image-scan.sh"
+          },
+	"OPA Conftest": {
+            sh 'docker run --rm -v $(pwd):/project openpolicyagent/conftest test --policy opa-docker-security.rego Dockerfile'
+          }
+        )
       }
     }
-
 
 
   stage('Docker Build and Push') {
       steps {
         withDockerRegistry([credentialsId: "docker-hub", url: ""]) {
           sh 'printenv'
-          sh 'docker build -t avisdocker/numeric-app:""$GIT_COMMIT"" .'
+          sh 'sudo docker build -t avisdocker/numeric-app:""$GIT_COMMIT"" .'
           sh 'docker push avisdocker/numeric-app:""$GIT_COMMIT""'
         }
       }
     }
+
+
+  stage('Vulnerability Scan - Kubernetes') {
+      steps {
+        parallel(
+          "OPA Scan": {
+            sh 'docker run --rm -v $(pwd):/project openpolicyagent/conftest test --policy opa-k8s-security.rego k8s_deployment_service.yaml'
+          },
+          "Kubesec Scan": {
+            sh "bash kubesec-scan.sh"
+          }
+        )
+      }
+    }
+
 
 stage('Kubernetes Deployment - DEV') {
       steps {
@@ -61,7 +95,24 @@ stage('Kubernetes Deployment - DEV') {
       }
     }
 
+  }
 
+	post {
+    	 always {
+      		  junit 'target/surefire-reports/*.xml'
+      		  jacoco execPattern: 'target/jacoco.exec'
+      		  pitmutation mutationStatsFile: '**/target/pit-reports/**/mutations.xml'
+      		  dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
+    		}
+
+    // success {
+
+    // }
+
+    // failure {
+
+    // }
+  }
 
 }
-}
+

@@ -36,7 +36,7 @@ stage('Mutation Tests - PIT') {
 
 stage('SonarQube - SAST') {
       steps {
-        sh "mvn sonar:sonar -Dsonar.projectKey=numeric-application -Dsonar.host.url=http://10.0.3.26:9000 -Dsonar.login=9c2872ed81b794c2829936e6618da63aac6dae55"
+        sh "mvn sonar:sonar -Dsonar.projectKey=numeric-application -Dsonar.host.url=http://10.0.3.26:9000 -Dsonar.login=1a6345e015c815082d08a9fcab5cfd1dbbfd88d7"
       }
     }
 
