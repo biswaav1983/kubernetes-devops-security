@@ -62,7 +62,7 @@ stage('Vulnerability Scan - Docker') {
         )
       }
     }
-}
+
 
   stage('Docker Build and Push') {
       steps {
