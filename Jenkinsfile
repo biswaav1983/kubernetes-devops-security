@@ -1,7 +1,7 @@
 pipeline {
   agent any
 
-environment {
+    environment {
     deploymentName = "devsecops"
     containerName = "devsecops-container"
     serviceName = "devsecops-svc"
@@ -50,6 +50,7 @@ stage('SonarQube - SAST') {
     }
 
 
+stage('Vulnerability Scan - Docker') {
       steps {
         parallel(
           "Dependency Scan": {
@@ -85,10 +86,15 @@ stage('SonarQube - SAST') {
           },
           "Kubesec Scan": {
             sh "bash kubesec-scan.sh"
+          },
+	
+	"Trivy Scan": {
+            sh "bash trivy-k8s-scan.sh"
           }
         )
       }
     }
+
 
 
 stage('K8S Deployment - DEV') {
@@ -119,7 +125,14 @@ stage('K8S Deployment - DEV') {
       		  dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
     		}
 
+    // success {
+
+    // }
+
+    // failure {
+
+    // }
   }
 
 }
-}
+
