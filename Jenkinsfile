@@ -1,6 +1,16 @@
 pipeline {
   agent any
 
+environment {
+    deploymentName = "devsecops"
+    containerName = "devsecops-container"
+    serviceName = "devsecops-svc"
+    imageName = "avisdocker/numeric-app:${GIT_COMMIT}"
+    //applicationURL = "http://devsecops-demo.eastus.cloudapp.azure.com/"
+    applicationURI = "/increment/99"
+  }
+	
+
   stages {
 
     stage('Build Artifact - Maven') {
@@ -40,14 +50,6 @@ stage('SonarQube - SAST') {
     }
 
 
-//stage('Vulnerability Scan - Docker ') {
-//      steps {
-//        sh "mvn dependency-check:check"
-//      }
-      
-//    }
-
-stage('Vulnerability Scan - Docker') {
       steps {
         parallel(
           "Dependency Scan": {
@@ -89,18 +91,6 @@ stage('Vulnerability Scan - Docker') {
     }
 
 
-
-//stage('Kubernetes Deployment - DEV') {
-//      steps {
-//        withKubeConfig([credentialsId: 'kubeconfig']) {
-//          sh "sed -i 's#replace#avisdocker/numeric-app:${GIT_COMMIT}#g' k8s_deployment_service.yaml"
-//          sh "kubectl apply -f k8s_deployment_service.yaml"
-//        }
-//      }
-//    }
-
-
-
 stage('K8S Deployment - DEV') {
       steps {
         parallel(
@@ -129,13 +119,6 @@ stage('K8S Deployment - DEV') {
       		  dependencyCheckPublisher pattern: 'target/dependency-check-report.xml'
     		}
 
-    // success {
-
-    // }
-
-    // failure {
-
-    // }
   }
 
 }
