@@ -5,7 +5,7 @@
 sleep 5s
 
 PORT=$(kubectl -n default get svc ${serviceName} -o json | jq .spec.ports[].nodePort)        
-//kubectl -n default get svc devsecops-svc -o json | jq .spec.ports[].nodePort
+# kubectl -n default get svc devsecops-svc -o json | jq .spec.ports[].nodePort
 
 echo $PORT
 echo $applicationURL:$PORT/$applicationURI
@@ -15,7 +15,8 @@ then
 
     response=$(curl -s $applicationURL:$PORT$applicationURI)
     http_code=$(curl -s -o /dev/null -w "%{http_code}" $applicationURL:$PORT$applicationURI)    
-// curl -s -o /dev/null -w "%{http_code}" 10.0.3.28:30545/increment/99
+    
+#curl -s -o /dev/null -w "%{http_code}" 10.0.3.28:30545/increment/99
 
     if [[ "$response" == 100 ]];
         then
