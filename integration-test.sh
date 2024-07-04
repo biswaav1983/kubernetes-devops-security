@@ -8,7 +8,7 @@ PORT=$(kubectl -n default get svc ${serviceName} -o json | jq .spec.ports[].node
 # kubectl -n default get svc devsecops-svc -o json | jq .spec.ports[].nodePort
 
 echo $PORT
-echo $applicationURL:$PORT$applicationURI
+echo $applicationURL:$PORT/$applicationURI
 
 if [[ ! -z "$PORT" ]];
 then
