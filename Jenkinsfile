@@ -6,7 +6,7 @@ pipeline {
     containerName = "devsecops-container"
     serviceName = "devsecops-svc"
     imageName = "avisdocker/numeric-app:${GIT_COMMIT}"
-    //applicationURL = "http://devsecops-demo.eastus.cloudapp.azure.com/"
+    applicationURL = "http://10.0.3.28:30545"
     applicationURI = "/increment/99"
   }
 	
@@ -114,6 +114,24 @@ stage('K8S Deployment - DEV') {
         )
       }
     }
+
+stage('Integration Tests - DEV') {
+      steps {
+        script {
+          try {
+            withKubeConfig([credentialsId: 'kubeconfig']) {
+              sh "bash integration-test.sh"
+            }
+          } catch (e) {
+            withKubeConfig([credentialsId: 'kubeconfig']) {
+              sh "kubectl -n default rollout undo deploy ${deploymentName}"
+            }
+            throw e
+          }
+        }
+      }
+    }  
+
 
 
   }
