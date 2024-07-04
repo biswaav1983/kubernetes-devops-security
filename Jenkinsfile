@@ -7,7 +7,7 @@ pipeline {
     serviceName = "devsecops-svc"
     imageName = "avisdocker/numeric-app:${GIT_COMMIT}"
     applicationURL = "http://10.0.3.28:30545"
-    applicationURI = "increment/99"
+    applicationURI = "/increment/99"
   }
 	
 
